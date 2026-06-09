@@ -4,6 +4,7 @@ import { supabase } from "./services/supabase";
 function App() {
 
   const [items, setItems] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const [itemCode, setItemCode] = useState("");
   const [itemName, setItemName] = useState("");
   const [drawingNo, setDrawingNo] = useState("");
@@ -48,6 +49,18 @@ function App() {
     loadItems();
   }
 
+  const filteredItems = items.filter((item) => {
+
+    const keyword = searchText.toLowerCase();
+  
+    return (
+      item.item_code?.toLowerCase().includes(keyword) ||
+      item.item_name?.toLowerCase().includes(keyword) ||
+      item.drawing_no?.toLowerCase().includes(keyword)
+    );
+  
+  });
+  
   async function addItem() {
 
     const { error } = await supabase
@@ -72,6 +85,8 @@ function App() {
     setDrawingNo("");
   }
 
+
+  
   return (
     <div style={{ padding: "20px" }}>
 
@@ -99,6 +114,19 @@ function App() {
       <button onClick={addItem}>
         품목 추가
       </button>
+      
+      <hr />
+      <h3>품목 검색</h3>
+
+        <input
+          type="text"
+          placeholder="품목코드 또는 품목명 검색"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+         />
+      <hr />
+      
+
     </div>
 
       <table border="1">
@@ -112,7 +140,7 @@ function App() {
         </thead>
 
         <tbody>
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <tr key={item.id}>
               <td>{item.item_code}</td>
               <td>{item.item_name}</td>
