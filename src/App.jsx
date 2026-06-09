@@ -4,10 +4,14 @@ import { supabase } from "./services/supabase";
 function App() {
 
   const [items, setItems] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  
   const [itemCode, setItemCode] = useState("");
   const [itemName, setItemName] = useState("");
   const [drawingNo, setDrawingNo] = useState("");
+
+  const [searchText, setSearchText] = useState("");
+
+  const [editId, setEditId] = useState(null);
 
   useEffect(() => {
     loadItems();
@@ -47,6 +51,41 @@ function App() {
     }
   
     loadItems();
+  }
+
+  function editItem(item) {
+
+    setEditId(item.id);
+  
+    setItemCode(item.item_code);
+    setItemName(item.item_name);
+    setDrawingNo(item.drawing_no);
+  
+  }
+
+  async function updateItem() {
+
+    const { error } = await supabase
+      .from("items")
+      .update({
+        item_code: itemCode,
+        item_name: itemName,
+        drawing_no: drawingNo
+      })
+      .eq("id", editId);
+  
+    if (error) {
+      console.error(error);
+      return;
+    }
+  
+    loadItems();
+  
+    setEditId(null);
+  
+    setItemCode("");
+    setItemName("");
+    setDrawingNo("");
   }
 
   const filteredItems = items.filter((item) => {
@@ -111,9 +150,15 @@ function App() {
         onChange={(e) => setDrawingNo(e.target.value)}
       />
 
+    {editId ? (
+      <button onClick={updateItem}>
+        수정 저장
+      </button>
+    ) : (
       <button onClick={addItem}>
         품목 추가
       </button>
+    )}
       
       <hr />
       <h3>품목 검색</h3>
@@ -147,8 +192,20 @@ function App() {
               <td>{item.drawing_no}</td>
 
               <td>
-                <button onClick={() => deleteItem(item.id)}>삭제</button>
-              </td>
+
+        <button
+          onClick={() => editItem(item)}
+        >
+          수정
+        </button>
+
+        <button
+          onClick={() => deleteItem(item.id)}
+        >
+          삭제
+        </button>
+
+      </td>
 
             </tr>
           ))}
