@@ -26,6 +26,28 @@ function App() {
     setItems(data);
   }
 
+  async function deleteItem(id) {
+
+    const confirmed = window.confirm(
+      "정말 삭제하시겠습니까?"
+    );
+  
+    if (!confirmed) return;
+  
+    const { error } = await supabase
+      .from("items")
+      .delete()
+      .eq("id", id);
+  
+    if (error) {
+      console.error(error);
+      alert("삭제 실패");
+      return;
+    }
+  
+    loadItems();
+  }
+
   async function addItem() {
 
     const { error } = await supabase
@@ -85,6 +107,7 @@ function App() {
             <th>품목코드</th>
             <th>품목명</th>
             <th>도면번호</th>
+            <th>관리</th>
           </tr>
         </thead>
 
@@ -94,6 +117,11 @@ function App() {
               <td>{item.item_code}</td>
               <td>{item.item_name}</td>
               <td>{item.drawing_no}</td>
+
+              <td>
+                <button onClick={() => deleteItem(item.id)}>삭제</button>
+              </td>
+
             </tr>
           ))}
         </tbody>
