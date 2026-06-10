@@ -4,9 +4,17 @@ import { supabase } from "../services/supabase";
     function InventoryPage() {
     
       const [inventory, setInventory] = useState([]);
+      
+      const [items, setItems] = useState([]);
+
+      const [itemId, setItemId] = useState("");
+      const [location, setLocation] = useState("");
+      const [stockQty, setStockQty] = useState("");
+      const [memo, setMemo] = useState("");
     
       useEffect(() => {
         loadInventory();
+        loadItems();
       }, []);
     
       async function loadInventory() {
@@ -30,11 +38,107 @@ import { supabase } from "../services/supabase";
         setInventory(data);
       }
     
+      async function loadItems() {
+
+        const { data, error } = await supabase
+          .from("items")
+          .select("*")
+          .order("item_name");
+      
+        if (error) {
+          console.error(error);
+          return;
+        }
+      
+        setItems(data);
+      }
+
+      async function addInventory() {
+
+        const { error } = await supabase
+          .from("inventory")
+          .insert([
+            {
+              item_id: itemId,
+              location: location,
+              stock_qty: stockQty,
+              memo: memo
+            }
+          ]);
+      
+        if (error) {
+          console.error(error);
+          alert("등록 실패");
+          return;
+        }
+      
+        loadInventory();
+      
+        setItemId("");
+        setLocation("");
+        setStockQty("");
+        setMemo("");
+      
+        alert("등록 완료");
+      }
+
       return (
         <div>
     
           <h2>재고관리</h2>
     
+          <hr />
+
+            <h3>재고 등록</h3>
+
+            <div>
+
+            <select
+                value={itemId}
+                onChange={(e) => setItemId(e.target.value)}
+            >
+
+                <option value="">
+                품목 선택
+                </option>
+
+                {items.map((item) => (
+                <option
+                    key={item.id}
+                    value={item.id}
+                >
+                    {item.item_code} / {item.item_name}
+                </option>
+                ))}
+
+            </select>
+
+            <input
+                placeholder="위치"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+            />
+
+            <input
+                placeholder="수량"
+                value={stockQty}
+                onChange={(e) => setStockQty(e.target.value)}
+            />
+
+            <input
+                placeholder="비고"
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
+            />
+
+            <button onClick={addInventory}>
+                재고 등록
+            </button>
+
+            </div>
+
+            <hr />
+
           <table border="1">
     
         <thead>
