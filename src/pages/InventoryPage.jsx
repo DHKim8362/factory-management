@@ -12,6 +12,8 @@ import { supabase } from "../services/supabase";
       const [stockQty, setStockQty] = useState("");
       const [memo, setMemo] = useState("");
     
+      const [editId, setEditId] = useState(null);
+
       useEffect(() => {
         loadInventory();
         loadItems();
@@ -82,6 +84,68 @@ import { supabase } from "../services/supabase";
         alert("등록 완료");
       }
 
+      function editInventory(row) {
+
+        setEditId(row.id);
+      
+        setItemId(row.item_id);
+        setLocation(row.location);
+        setStockQty(row.stock_qty);
+        setMemo(row.memo || "");
+      }
+
+      async function updateInventory() {
+
+        const { error } = await supabase
+          .from("inventory")
+          .update({
+            item_id: Number(itemId),
+            location: location,
+            stock_qty: Number(stockQty),
+            memo: memo
+          })
+          .eq("id", editId);
+      
+        if (error) {
+          console.error(error);
+          alert("수정 실패");
+          return;
+        }
+      
+        loadInventory();
+      
+        setEditId(null);
+      
+        setItemId("");
+        setLocation("");
+        setStockQty("");
+        setMemo("");
+      
+        alert("수정 완료");
+      }
+
+      async function deleteInventory(id) {
+
+        const confirmed = window.confirm(
+          "정말 삭제하시겠습니까?"
+        );
+      
+        if (!confirmed) return;
+      
+        const { error } = await supabase
+          .from("inventory")
+          .delete()
+          .eq("id", id);
+      
+        if (error) {
+          console.error(error);
+          alert("삭제 실패");
+          return;
+        }
+      
+        loadInventory();
+      }
+
       return (
         <div>
     
@@ -131,13 +195,21 @@ import { supabase } from "../services/supabase";
                 onChange={(e) => setMemo(e.target.value)}
             />
 
+        {editId ? (
+            <button onClick={updateInventory}>
+                수정 저장
+            </button>
+            ) : (
             <button onClick={addInventory}>
                 재고 등록
             </button>
+        )}
 
             </div>
 
             <hr />
+
+
 
           <table border="1">
     
@@ -149,6 +221,7 @@ import { supabase } from "../services/supabase";
                 <th>도면번호</th>
                 <th>위치</th>
                 <th>수량</th>
+                <th>관리</th>
             </tr>
         </thead>
     
@@ -163,6 +236,21 @@ import { supabase } from "../services/supabase";
 
                 <td>{row.location}</td>
                 <td>{row.stock_qty}</td>
+
+                <td>
+                    <button
+                        onClick={() => editInventory(row)}
+                    >
+                        수정
+                    </button>
+
+                    <button
+                        onClick={() => deleteInventory(row.id)}
+                    >
+                        삭제
+                    </button>
+                </td>
+
                 </tr>
             ))}
             </tbody>
