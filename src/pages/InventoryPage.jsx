@@ -14,6 +14,8 @@ import { supabase } from "../services/supabase";
     
       const [editId, setEditId] = useState(null);
 
+      const [searchText, setSearchText] = useState("");
+
       useEffect(() => {
         loadInventory();
         loadItems();
@@ -54,6 +56,19 @@ import { supabase } from "../services/supabase";
       
         setItems(data);
       }
+      
+      const filteredInventory = inventory.filter((row) => {
+
+        const keyword = searchText.toLowerCase();
+      
+        return (
+          row.items?.item_code?.toLowerCase().includes(keyword) ||
+          row.items?.item_name?.toLowerCase().includes(keyword) ||
+          row.items?.drawing_no?.toLowerCase().includes(keyword) ||
+          row.location?.toLowerCase().includes(keyword)
+        );
+      
+      });
 
       async function addInventory() {
 
@@ -155,6 +170,8 @@ import { supabase } from "../services/supabase";
 
             <h3>재고 등록</h3>
 
+            
+
             <div>
 
             <select
@@ -208,7 +225,14 @@ import { supabase } from "../services/supabase";
             </div>
 
             <hr />
-
+                <h3>재고 검색</h3>
+                <input
+                type="text"
+                placeholder="품목코드, 품목명, 도면번호, 위치"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                />
+            <hr />
 
 
           <table border="1">
@@ -226,7 +250,7 @@ import { supabase } from "../services/supabase";
         </thead>
     
             <tbody>
-            {inventory.map((row) => (
+            {filteredInventory.map((row) => (
                 <tr key={row.id}>
                 <td>{row.id}</td>
 
