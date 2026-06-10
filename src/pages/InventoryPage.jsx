@@ -245,6 +245,7 @@ import { supabase } from "../services/supabase";
                 <th>도면번호</th>
                 <th>위치</th>
                 <th>수량</th>
+                <th>비고</th>
                 <th>관리</th>
             </tr>
         </thead>
@@ -260,6 +261,7 @@ import { supabase } from "../services/supabase";
 
                 <td>{row.location}</td>
                 <td>{row.stock_qty}</td>
+                <td>{row.memo || "-"}</td>
 
                 <td>
                     <button
