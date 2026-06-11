@@ -117,7 +117,8 @@ import { supabase } from "../services/supabase";
             item_id: Number(itemId),
             location: location,
             stock_qty: Number(stockQty),
-            memo: memo
+            memo: memo,
+            updated_at: new Date()
           })
           .eq("id", editId);
       
@@ -246,6 +247,7 @@ import { supabase } from "../services/supabase";
                 <th>위치</th>
                 <th>수량</th>
                 <th>비고</th>
+                <th>수정일자</th>
                 <th>관리</th>
             </tr>
         </thead>
@@ -262,6 +264,13 @@ import { supabase } from "../services/supabase";
                 <td>{row.location}</td>
                 <td>{row.stock_qty}</td>
                 <td>{row.memo || "-"}</td>
+
+                <td>
+                    {row.updated_at
+                        ? new Date(row.updated_at).toLocaleDateString("ko-KR")
+                        : "-"
+                    }
+                </td>
 
                 <td>
                     <button
