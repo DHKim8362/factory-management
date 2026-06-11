@@ -127,10 +127,11 @@ function ItemPage() {
 
   
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
 
-      <h1>품목관리</h1>
-
+      <h2>품목관리</h2>
+      <hr />
+      
       <div>
       <input
         placeholder="품목코드"

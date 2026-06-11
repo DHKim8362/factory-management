@@ -87,6 +87,11 @@ import { supabase } from "../services/supabase";
       
       });
 
+      const totalStock = filteredInventory.reduce(
+        (sum, row) => sum + (row.stock_qty || 0),
+        0
+      );
+
       async function addInventory() {
 
         const { error } = await supabase
@@ -186,7 +191,7 @@ import { supabase } from "../services/supabase";
     
           <hr />
 
-            <h3>재고 등록</h3>
+            {/*<h3>재고 등록</h3>*/}
 
             
 
@@ -274,6 +279,9 @@ import { supabase } from "../services/supabase";
                 />
             <hr />
 
+            <h3>
+              총재고 : {totalStock.toLocaleString()} 개
+            </h3>
 
           <table border="1">
     
