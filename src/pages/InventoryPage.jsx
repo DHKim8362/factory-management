@@ -279,7 +279,7 @@ import { supabase } from "../services/supabase";
     
         <thead>
             <tr>
-                <th>ID</th>
+                <th>No</th>
                 <th>품목코드</th>
                 <th>품목명</th>
                 <th>도면번호</th>
@@ -292,9 +292,9 @@ import { supabase } from "../services/supabase";
         </thead>
     
             <tbody>
-            {filteredInventory.map((row) => (
+            {filteredInventory.map((row, index) => (
                 <tr key={row.id}>
-                <td>{row.id}</td>
+                <td>{index + 1}</td>
 
                 <td>{row.items?.item_code}</td>
                 <td>{row.items?.item_name}</td>

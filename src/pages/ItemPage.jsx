@@ -177,6 +177,7 @@ function ItemPage() {
       <table border="1">
         <thead>
           <tr>
+            <th>No</th>
             <th>품목코드</th>
             <th>품목명</th>
             <th>도면번호</th>
@@ -185,8 +186,9 @@ function ItemPage() {
         </thead>
 
         <tbody>
-          {filteredItems.map((item) => (
+          {filteredItems.map((item, index) => (
             <tr key={item.id}>
+              <td>{index + 1}</td>
               <td>{item.item_code}</td>
               <td>{item.item_name}</td>
               <td>{item.drawing_no}</td>
