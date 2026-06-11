@@ -6,6 +6,7 @@ import { supabase } from "../services/supabase";
       const [inventory, setInventory] = useState([]);
       
       const [items, setItems] = useState([]);
+      const [locations, setLocations] = useState([]);
 
       const [itemId, setItemId] = useState("");
       const [location, setLocation] = useState("");
@@ -19,6 +20,7 @@ import { supabase } from "../services/supabase";
       useEffect(() => {
         loadInventory();
         loadItems();
+        loadLocations();
       }, []);
     
       async function loadInventory() {
@@ -57,6 +59,21 @@ import { supabase } from "../services/supabase";
         setItems(data);
       }
       
+      async function loadLocations() {
+
+        const { data, error } = await supabase
+          .from("locations")
+          .select("*")
+          .order("location_name");
+      
+        if (error) {
+          console.error(error);
+          return;
+        }
+      
+        setLocations(data);
+      }
+
       const filteredInventory = inventory.filter((row) => {
 
         const keyword = searchText.toLowerCase();
@@ -189,17 +206,39 @@ import { supabase } from "../services/supabase";
                     key={item.id}
                     value={item.id}
                 >
-                    {item.item_code} / {item.item_name}
+                    {/* {item.item_code} / {item.item_name} */}
+                    {item.drawing_no} / {item.item_name}
                 </option>
                 ))}
 
             </select>
 
+            {/*
             <input
                 placeholder="위치"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
             />
+            */}
+
+            <select
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                >
+
+                <option value="">
+                    위치 선택
+                </option>
+
+                {locations.map((loc) => (
+                    <option
+                    key={loc.id}
+                    value={loc.location_name}
+                    >
+                    {loc.location_name}
+                    </option>
+                ))}
+            </select>
 
             <input
                 placeholder="수량"
