@@ -5,6 +5,7 @@ function ItemPage() {
 
   const [items, setItems] = useState([]);
   
+  const [itemType, setItemType] = useState("");
   const [itemCode, setItemCode] = useState("");
   const [itemName, setItemName] = useState("");
   const [drawingNo, setDrawingNo] = useState("");
@@ -57,6 +58,7 @@ function ItemPage() {
 
     setEditId(item.id);
   
+    setItemType(item.item_type);
     setItemCode(item.item_code);
     setItemName(item.item_name);
     setDrawingNo(item.drawing_no);
@@ -68,6 +70,7 @@ function ItemPage() {
     const { error } = await supabase
       .from("items")
       .update({
+        item_type: itemType,
         item_code: itemCode,
         item_name: itemName,
         drawing_no: drawingNo
@@ -83,6 +86,7 @@ function ItemPage() {
   
     setEditId(null);
   
+    setItemType("");
     setItemCode("");
     setItemName("");
     setDrawingNo("");
@@ -93,6 +97,7 @@ function ItemPage() {
     const keyword = searchText.toLowerCase();
   
     return (
+      item.item_type?.toLowerCase().includes(keyword) ||
       item.item_code?.toLowerCase().includes(keyword) ||
       item.item_name?.toLowerCase().includes(keyword) ||
       item.drawing_no?.toLowerCase().includes(keyword)
@@ -106,6 +111,7 @@ function ItemPage() {
       .from("items")
       .insert([
         {
+          item_type: itemType,
           item_code: itemCode,
           item_name: itemName,
           drawing_no: drawingNo
@@ -119,6 +125,7 @@ function ItemPage() {
   
     loadItems();
   
+    setItemType("");
     setItemCode("");
     setItemName("");
     setDrawingNo("");
@@ -131,8 +138,14 @@ function ItemPage() {
 
       <h2>품목관리</h2>
       <hr />
-      
+
       <div>
+      <input
+        placeholder="타입"
+        value={itemType}
+        onChange={(e) => setItemType(e.target.value)}
+      />
+      
       <input
         placeholder="품목코드"
         value={itemCode}
@@ -166,7 +179,7 @@ function ItemPage() {
 
         <input
           type="text"
-          placeholder="품목코드 또는 품목명 검색"
+          placeholder="타입, 품목코드, 품목명, 도면번호 검색"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
          />
@@ -179,6 +192,7 @@ function ItemPage() {
         <thead>
           <tr>
             <th>No</th>
+            <th>타입</th>
             <th>품목코드</th>
             <th>품목명</th>
             <th>도면번호</th>
@@ -190,6 +204,7 @@ function ItemPage() {
           {filteredItems.map((item, index) => (
             <tr key={item.id}>
               <td>{index + 1}</td>
+              <td>{item.item_type}</td>
               <td>{item.item_code}</td>
               <td>{item.item_name}</td>
               <td>{item.drawing_no}</td>

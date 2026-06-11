@@ -32,7 +32,8 @@ import { supabase } from "../services/supabase";
             items (
                 item_name,
                 item_code,
-                drawing_no
+                drawing_no,
+                item_type
             )
             `)
     
@@ -288,6 +289,7 @@ import { supabase } from "../services/supabase";
         <thead>
             <tr>
                 <th>No</th>
+                <th>타입</th>
                 <th>품목코드</th>
                 <th>품목명</th>
                 <th>도면번호</th>
@@ -304,6 +306,7 @@ import { supabase } from "../services/supabase";
                 <tr key={row.id}>
                 <td>{index + 1}</td>
 
+                <td>{row.items?.item_type}</td>
                 <td>{row.items?.item_code}</td>
                 <td>{row.items?.item_name}</td>
                 <td>{row.items?.drawing_no}</td>
