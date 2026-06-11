@@ -80,6 +80,7 @@ import { supabase } from "../services/supabase";
         const keyword = searchText.toLowerCase();
       
         return (
+          row.items?.item_type?.toLowerCase().includes(keyword) ||
           row.items?.item_code?.toLowerCase().includes(keyword) ||
           row.items?.item_name?.toLowerCase().includes(keyword) ||
           row.items?.drawing_no?.toLowerCase().includes(keyword) ||
@@ -213,7 +214,7 @@ import { supabase } from "../services/supabase";
                     value={item.id}
                 >
                     {/* {item.item_code} / {item.item_name} */}
-                    {item.drawing_no} / {item.item_name}
+                    {item.item_type} / {item.drawing_no} / {item.item_name}
                 </option>
                 ))}
 
